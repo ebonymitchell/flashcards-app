@@ -1,4 +1,4 @@
-const decks = [
+const sampleDecks = [
     {
         id: "deck-javascript-basics",
         name: "JavaScript Basics",
@@ -19,10 +19,15 @@ const decks = [
     },
 ];
 
+let decks = sampleDecks;
+
+const storageKey = "flashcards-study-app";
+
 const deckList = document.querySelector("#deck-list");
 const deckTitle = document.querySelector("#deck-title");
 const cardCount = document.querySelector("#card-count");
 const cardPosition = document.querySelector("#card-position");
+const cardSearch = document.querySelector("#card-search");
 const newDeckButton = document.querySelector("#new-deck-button");
 const deckActions = document.querySelector(".deck-actions");
 const flashcard = document.querySelector("#flashcard");
@@ -50,6 +55,82 @@ let activeCardId = null;
 let studyOrder = [];
 let isCardFlipped = false;
 let modalOpener = null;
+let searchQuery = "";
+
+function isValidCard(card) {
+    return (
+        card &&
+        typeof card.id === "string" &&
+        typeof card.front === "string" &&
+        typeof card.back === "string"
+    );
+}
+
+function isValidDeck(deck) {
+    return (
+        deck &&
+        typeof deck.id === "string" &&
+        typeof deck.name === "string" &&
+        typeof deck.createdAt === "string" &&
+        Array.isArray(deck.cards) &&
+        deck.cards.every(isValidCard) &&
+        new Set(deck.cards.map((card) => card.id)).size === deck.cards.length
+    );
+}
+
+function loadData() {
+    try {
+        const savedData = window.localStorage.getItem(storageKey);
+
+        if (!savedData) {
+            return null;
+        }
+
+        const parsedData = JSON.parse(savedData);
+
+        if (
+            !parsedData ||
+            !Array.isArray(parsedData.decks) ||
+            !parsedData.decks.every(isValidDeck) ||
+            new Set(parsedData.decks.map((deck) => deck.id)).size !==
+                parsedData.decks.length ||
+            (parsedData.activeDeckId !== null &&
+                typeof parsedData.activeDeckId !== "string")
+        ) {
+            console.warn("Saved flashcard data is invalid; using sample decks.");
+            return null;
+        }
+
+        return parsedData;
+    } catch {
+        console.warn("Saved flashcard data could not be loaded.");
+        return null;
+    }
+}
+
+function saveData() {
+    try {
+        window.localStorage.setItem(
+            storageKey,
+            JSON.stringify({ decks, activeDeckId }),
+        );
+    } catch {
+        console.warn("Flashcard data could not be saved.");
+    }
+}
+
+function initializeData() {
+    const savedData = loadData();
+
+    if (!savedData) {
+        return;
+    }
+
+    decks = savedData.decks;
+    activeDeckId = decks.some((deck) => deck.id === savedData.activeDeckId)
+        ? savedData.activeDeckId
+        : decks[0]?.id ?? null;
+}
 
 function getActiveDeck() {
     return decks.find((deck) => deck.id === activeDeckId) ?? null;
@@ -57,24 +138,45 @@ function getActiveDeck() {
 
 function getActiveCard() {
     const activeDeck = getActiveDeck();
-    return activeDeck?.cards.find((card) => card.id === activeCardId) ?? null;
+    return (
+        activeDeck?.cards.find(
+            (card) =>
+                card.id === activeCardId &&
+                filterCards().some((filteredCard) => filteredCard.id === card.id),
+        ) ?? null
+    );
 }
 
-function getStudyCards() {
+function filterCards() {
     const activeDeck = getActiveDeck();
 
     if (!activeDeck) {
         return [];
     }
 
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+        return [...activeDeck.cards];
+    }
+
+    return activeDeck.cards.filter(
+        (card) =>
+            card.front.toLowerCase().includes(query) ||
+            card.back.toLowerCase().includes(query),
+    );
+}
+
+function getStudyCards() {
+    const filteredCards = filterCards();
+
     return studyOrder
-        .map((cardId) => activeDeck.cards.find((card) => card.id === cardId))
+        .map((cardId) => filteredCards.find((card) => card.id === cardId))
         .filter(Boolean);
 }
 
 function resetStudyOrder() {
-    const activeDeck = getActiveDeck();
-    studyOrder = activeDeck?.cards.map((card) => card.id) ?? [];
+    studyOrder = filterCards().map((card) => card.id);
 }
 
 function shuffleStudyOrder() {
@@ -89,6 +191,19 @@ function shuffleStudyOrder() {
     activeCardId = studyOrder[0] ?? null;
     isCardFlipped = false;
     renderDeckState();
+}
+
+function updateCardEmptyState(activeDeck, hasCard) {
+    if (!activeDeck) {
+        cardEmptyState.hidden = true;
+        return;
+    }
+
+    cardEmptyState.hidden = hasCard;
+    cardEmptyState.textContent =
+        activeDeck.cards.length === 0
+            ? "This deck has no cards yet. Select New Card to add one."
+            : "No matching cards.";
 }
 
 function renderDecks() {
@@ -152,6 +267,8 @@ function updateStudyControls() {
         if (control) {
             if (controlId === "new-card-button") {
                 control.disabled = !hasDeck;
+            } else if (controlId === "card-search") {
+                control.disabled = !hasDeck;
             } else {
                 control.disabled = !hasCard;
             }
@@ -171,7 +288,7 @@ function renderCard() {
     const cardIndex = studyCards.findIndex((card) => card.id === activeCardId);
 
     flashcard.hidden = !hasDeck;
-    cardEmptyState.hidden = !hasDeck || activeDeck.cards.length > 0;
+    updateCardEmptyState(activeDeck, activeCard !== null);
     cardFront.hidden = !activeCard || isCardFlipped;
     cardBack.hidden = !activeCard || !isCardFlipped;
 
@@ -180,7 +297,11 @@ function renderCard() {
         cardBack.querySelector("p").textContent = activeCard.back;
     }
 
-    cardCount.textContent = `${activeDeck?.cards.length ?? 0} cards`;
+    const totalCardCount = activeDeck?.cards.length ?? 0;
+    cardCount.textContent =
+        searchQuery && hasDeck
+            ? `${getStudyCards().length} of ${totalCardCount} cards`
+            : `${totalCardCount} cards`;
     cardPosition.textContent = activeCard
         ? `Card ${cardIndex + 1} of ${studyCards.length}.`
         : "Card 0 of 0.";
@@ -212,6 +333,7 @@ function selectDeck(deckId) {
     activeCardId = selectedDeck.cards[0]?.id ?? null;
     isCardFlipped = false;
     deckTitle.textContent = selectedDeck.name;
+    saveData();
     renderDeckState();
 }
 
@@ -220,6 +342,7 @@ function showEmptyDeckState() {
     activeCardId = null;
     studyOrder = [];
     deckTitle.textContent = "No decks yet";
+    saveData();
     renderDeckState();
 }
 
@@ -249,8 +372,8 @@ function renameDeck(deckId, name) {
     if (!deck) {
         return;
     }
-
     deck.name = name;
+    selectDeck(deck.id);
     selectDeck(deck.id);
 }
 
@@ -286,8 +409,11 @@ function createCard(front, back) {
 
     activeDeck.cards.push(card);
     resetStudyOrder();
-    activeCardId = card.id;
+    activeCardId = getStudyCards().some((candidate) => candidate.id === card.id)
+        ? card.id
+        : getStudyCards()[0]?.id ?? null;
     isCardFlipped = false;
+    saveData();
     renderDeckState();
 }
 
@@ -303,7 +429,11 @@ function updateCard(cardId, front, back) {
     activeCard.front = front;
     activeCard.back = back;
     resetStudyOrder();
+    activeCardId = getStudyCards().some((card) => card.id === activeCard.id)
+        ? activeCard.id
+        : getStudyCards()[0]?.id ?? null;
     isCardFlipped = false;
+    saveData();
     renderDeckState();
 }
 
@@ -324,8 +454,9 @@ function deleteActiveCard() {
 
     activeDeck.cards.splice(cardIndex, 1);
     resetStudyOrder();
-    activeCardId = activeDeck.cards[0]?.id ?? null;
+    activeCardId = getStudyCards()[0]?.id ?? null;
     isCardFlipped = false;
+    saveData();
     renderDeckState();
 }
 
@@ -549,6 +680,13 @@ previousButton.addEventListener("click", () => moveToCard(-1));
 nextButton.addEventListener("click", () => moveToCard(1));
 flipButton.addEventListener("click", flipActiveCard);
 document.querySelector("#shuffle-button").addEventListener("click", shuffleStudyOrder);
+cardSearch.addEventListener("input", () => {
+    searchQuery = cardSearch.value;
+    resetStudyOrder();
+    activeCardId = getStudyCards()[0]?.id ?? null;
+    isCardFlipped = false;
+    renderDeckState();
+});
 flashcard.addEventListener("click", flipActiveCard);
 flashcard.addEventListener("keydown", (event) => {
     if (event.key === " " || event.key === "Enter") {
@@ -577,6 +715,8 @@ document.addEventListener("keydown", (event) => {
         flipActiveCard();
     }
 });
+
+initializeData();
 
 if (activeDeckId) {
     selectDeck(activeDeckId);
