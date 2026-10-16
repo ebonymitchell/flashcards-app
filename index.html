@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flashcards Study App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>Flashcards Study App</h1>
+      <button id="new-deck-button" type="button">New Deck</button>
+    </header>
+
+    <div class="app-layout">
+      <aside class="deck-sidebar" aria-labelledby="decks-heading">
+        <h2 id="decks-heading">My Decks</h2>
+        <nav aria-label="Flashcard decks">
+          <ul id="deck-list">
+            <li>
+              <a href="#deck-content" aria-current="page">JavaScript Basics</a>
+            </li>
+            <li>
+              <a href="#deck-content">World Geography</a>
+            </li>
+            <li>
+              <a href="#deck-content">Spanish Vocabulary</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <main id="deck-content" class="deck-main">
+        <section class="deck-toolbar" aria-labelledby="deck-title">
+          <div>
+            <h2 id="deck-title">JavaScript Basics</h2>
+            <p id="card-count">12 cards</p>
+          </div>
+
+          <div class="deck-actions">
+            <form role="search" aria-label="Search cards">
+              <label for="card-search">Search cards</label>
+              <input
+                id="card-search"
+                name="card-search"
+                type="search"
+                placeholder="Search cards"
+              />
+            </form>
+            <button id="shuffle-button" type="button">Shuffle</button>
+            <button id="new-card-button" type="button">New Card</button>
+          </div>
+        </section>
+
+        <section class="study-area" aria-labelledby="study-heading">
+          <h2 id="study-heading">Study card</h2>
+          <article id="flashcard" class="flashcard" aria-live="polite">
+            <div id="card-front" class="card-face card-front">
+              <h3>Front</h3>
+              <p>What does HTML stand for?</p>
+            </div>
+            <div id="card-back" class="card-face card-back" hidden>
+              <h3>Back</h3>
+              <p>HyperText Markup Language</p>
+            </div>
+          </article>
+
+          <nav class="card-navigation" aria-label="Flashcard navigation">
+            <button id="previous-button" type="button">Previous</button>
+            <button id="flip-button" type="button" aria-controls="flashcard">
+              Flip
+            </button>
+            <button id="next-button" type="button">Next</button>
+          </nav>
+        </section>
+      </main>
+    </div>
+
+    <footer class="app-footer">
+      <p>
+        Study by reviewing the front of each card, then select Flip to reveal
+        the answer. Use Previous and Next to move through the deck.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

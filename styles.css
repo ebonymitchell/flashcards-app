@@ -1,0 +1,361 @@
+:root {
+  /* Colors */
+  --color-background: #f4f7fb;
+  --color-surface: #ffffff;
+  --color-surface-muted: #e9eef7;
+  --color-text: #1d2939;
+  --color-text-muted: #667085;
+  --color-border: #d0d5dd;
+  --color-primary: #3659c9;
+  --color-primary-hover: #2948ad;
+  --color-primary-text: #ffffff;
+  --color-focus: #f79009;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Typography */
+  --font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.75rem;
+  --line-height: 1.5;
+  --heading-line-height: 1.2;
+
+  --sidebar-width: 16rem;
+  --content-max-width: 72rem;
+  --border-radius: 0.75rem;
+  --shadow: 0 0.5rem 1.5rem rgb(16 24 40 / 0.08);
+}
+
+/* Base styles */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color: var(--color-text);
+  background: var(--color-background);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height);
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  flex-direction: column;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 0.2rem solid var(--color-focus);
+  outline-offset: 0.15rem;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: var(--heading-line-height);
+}
+
+/* Header */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  color: var(--color-primary-text);
+  background: var(--color-primary);
+}
+
+.app-header h1 {
+  margin-bottom: 0;
+  font-size: var(--font-size-xl);
+}
+
+#new-deck-button {
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+#new-deck-button:hover {
+  background: var(--color-surface-muted);
+}
+
+/* Sidebar and main layout */
+
+.app-layout {
+  display: flex;
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  flex: 1;
+}
+
+.deck-sidebar {
+  width: var(--sidebar-width);
+  flex: 0 0 var(--sidebar-width);
+  padding: var(--space-6) var(--space-4);
+  border-right: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.deck-sidebar h2 {
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+#deck-list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+#deck-list a {
+  display: block;
+  padding: var(--space-3);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+#deck-list a:hover,
+#deck-list a[aria-current="page"] {
+  color: var(--color-primary);
+  background: var(--color-surface-muted);
+}
+
+.deck-main {
+  min-width: 0;
+  padding: var(--space-6);
+  flex: 1;
+}
+
+/* Toolbar */
+
+.deck-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+.deck-toolbar h2 {
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-xl);
+}
+
+#card-count {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
+
+.deck-actions {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.deck-actions form {
+  display: flex;
+  min-width: 14rem;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.deck-actions label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+#card-search {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.deck-actions button,
+.card-navigation button {
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-primary-text);
+  background: var(--color-primary);
+}
+
+.deck-actions button:hover,
+.card-navigation button:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Flashcard study area */
+
+.study-area {
+  max-width: 48rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.study-area > h2 {
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-lg);
+}
+
+.flashcard {
+  display: flex;
+  min-height: 18rem;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  background: var(--color-surface);
+}
+
+.card-face {
+  width: 100%;
+}
+
+.card-face h3 {
+  margin-bottom: var(--space-4);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card-face p {
+  margin-bottom: 0;
+  font-size: var(--font-size-xl);
+}
+
+.card-navigation {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+/* Footer */
+
+.app-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.app-footer p {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* Dark theme */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #101828;
+    --color-surface: #1d2939;
+    --color-surface-muted: #344054;
+    --color-text: #f2f4f7;
+    --color-text-muted: #98a2b3;
+    --color-border: #475467;
+    --color-primary: #8098f9;
+    --color-primary-hover: #aab8ff;
+    --color-primary-text: #101828;
+    --color-focus: #fdb022;
+    --shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.25);
+  }
+}
+
+/* Responsive layout */
+
+@media (max-width: 767px) {
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .deck-sidebar {
+    width: 100%;
+    flex-basis: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  #deck-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .deck-main {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .deck-toolbar {
+    flex-direction: column;
+    margin-bottom: var(--space-6);
+  }
+
+  .deck-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .deck-actions form {
+    min-width: min(100%, 14rem);
+    flex: 1 1 100%;
+  }
+
+  .flashcard {
+    min-height: 14rem;
+    padding: var(--space-5);
+  }
+}
