@@ -359,3 +359,60 @@ h3 {
     padding: var(--space-5);
   }
 }
+
+/* Deck modal */
+
+#new-deck-modal {
+  width: min(90vw, 400px);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow);
+}
+
+#new-deck-modal::backdrop {
+  background: rgb(0 0 0 / 0.6);
+}
+
+#new-deck-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+#new-deck-modal h2 {
+  margin-bottom: var(--space-4);
+}
+
+#new-deck-modal label {
+  font-weight: 600;
+}
+
+#new-deck-modal input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+#new-deck-modal form > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+#new-deck-modal button {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+#new-deck-modal button[type="button"] {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
