@@ -55,15 +55,25 @@
         <section class="study-area" aria-labelledby="study-heading">
           <h2 id="study-heading">Study card</h2>
           <article id="flashcard" class="flashcard" aria-live="polite">
-            <div id="card-front" class="card-face card-front">
+            <p id="card-empty-state" hidden>
+              This deck has no cards yet. Select New Card to add one.
+            </p>
+            <div id="card-front" class="card-face card-front" hidden>
               <h3>Front</h3>
-              <p>What does HTML stand for?</p>
+              <p></p>
             </div>
             <div id="card-back" class="card-face card-back" hidden>
               <h3>Back</h3>
-              <p>HyperText Markup Language</p>
+              <p></p>
             </div>
           </article>
+
+          <div id="card-actions" class="card-actions">
+            <button id="edit-card-button" type="button">Edit Card</button>
+            <button id="delete-card-button" type="button">
+              Delete Card
+            </button>
+          </div>
 
           <nav class="card-navigation" aria-label="Flashcard navigation">
             <button id="previous-button" type="button">Previous</button>
