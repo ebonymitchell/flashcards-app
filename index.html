@@ -54,7 +54,15 @@
 
         <section class="study-area" aria-labelledby="study-heading">
           <h2 id="study-heading">Study card</h2>
-          <article id="flashcard" class="flashcard" aria-live="polite">
+          <article
+            id="flashcard"
+            class="flashcard"
+            role="button"
+            tabindex="0"
+            aria-live="polite"
+            aria-label="Flashcard. Activate to flip."
+            aria-pressed="false"
+          >
             <p id="card-empty-state" hidden>
               This deck has no cards yet. Select New Card to add one.
             </p>
@@ -67,6 +75,9 @@
               <p></p>
             </div>
           </article>
+          <p id="card-position" class="card-position" aria-live="polite">
+            Card 0 of 0.
+          </p>
 
           <div id="card-actions" class="card-actions">
             <button id="edit-card-button" type="button">Edit Card</button>

@@ -251,6 +251,17 @@ h3 {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
   background: var(--color-surface); 
+  cursor: pointer;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.flashcard:hover {
+  transform: translateY(-0.15rem);
+}
+
+.flashcard:focus-visible {
+  outline: 0.2rem solid var(--color-focus);
+  outline-offset: 0.2rem;
 }
 
 [hidden] {
@@ -278,6 +289,13 @@ h3 {
   justify-content: center;
   gap: var(--space-3);
   margin-top: var(--space-5);
+}
+
+.card-position {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
 }
 
 .card-actions {
@@ -378,6 +396,16 @@ h3 {
   .flashcard {
     min-height: 14rem;
     padding: var(--space-5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashcard {
+    transition: none;
+  }
+
+  .flashcard:hover {
+    transform: none;
   }
 }
 
